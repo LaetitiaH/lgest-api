@@ -1,13 +1,14 @@
 //JEST TEST
-const request = require("supertest");
-const app = require("../app");
+const request = require('supertest');
+const app = require('../app');
 
-
-describe("Test the societe resource", () => {
+describe('Test the societe resource', () => {
     // Get all societe test
-    test("It should response the GET method", done => {
-        request(app)
-            .get("/societes")
+    test('It should response the GET method', done => {
+        const database = {};
+
+        request(app(database))
+            .get('/societes')
             .expect('Content-Type', /json/)
             .then(response => {
                 expect(response.statusCode).toBe(200);
@@ -16,14 +17,14 @@ describe("Test the societe resource", () => {
     });
 
     // Get one societe test
-    test("It should response the GET method for one society", done => {
-        request(app)
-            .get("/societes/:id")
+    test('It should response the GET method for one society', done => {
+        const database = {};
+
+        request(app(database))
+            .get('/societes/:id')
             .then(response => {
                 expect(response.statusCode).toBe(200);
                 done();
             });
     });
 });
-
-
