@@ -1,3 +1,4 @@
 const app = require('./app');
+const database = require('./database');
 
-app.listen(3000);
+app(database).listen(3000);
