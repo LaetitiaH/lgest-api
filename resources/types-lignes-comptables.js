@@ -4,16 +4,39 @@ const router = express.Router();
 module.exports = database => {
     //GET ALL TYPES LIGNES COMPTABLES
     router.get("/", (reqHttp, resHttp) => {
-        database.query(
-            "SELECT id,label FROM type_ligne_comptable;",
-            (err, res) => {
-                if (err) {
-                    return resHttp.status(500).send({ error: "server error" });
-                } else {
-                    return resHttp.send(res.rows);
+        const label = reqHttp.query.label;
+        if (label) {
+            database.query(
+                "SELECT id, label FROM type_ligne_comptable WHERE label = $1",
+                [label],
+                (err, res) => {
+                    if (err) {
+                        return resHttp
+                            .status(500)
+                            .send({ error: "server error" });
+                    } else if (res.rows.length === 0) {
+                        return resHttp.status(404).send({
+                            error: "not_found",
+                            error_description: `The type of the ligne comptable '${label}' does not exist`
+                        });
+                    } else {
+                        return resHttp.send(res.rows[0]);
+                    }
+                });
+        } else {
+            database.query(
+                "SELECT id, label FROM type_ligne_comptable;",
+                (err, res) => {
+                    if (err) {
+                        return resHttp
+                            .status(500)
+                            .send({ error: "server error" });
+                    } else {
+                        return resHttp.send(res.rows);
+                    }
                 }
-            }
-        );
+            );
+        }
     });
 
     //GET ONE TYPES LIGNES COMPTABLES

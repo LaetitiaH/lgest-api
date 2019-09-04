@@ -25,6 +25,10 @@ CREATE TABLE ligne_comptable(
   societe_id int REFERENCES societe(id)
 );
 
+
+
+societes
+
 UPDATE societe SET label = 'leroyMErlin' WHERE id = 1;
 
 INSERT INTO societe(label)
@@ -35,5 +39,28 @@ DELETE FROM societe
 WHERE id = 1;
 
 
+ligne_comptable
+
+INSERT INTO ligne_comptable(date_facture,date_encaissement,montant_ttc,montant_ht, montant_tva,transmis_compta,commentaires,typeligne_id,societe_id)
+VALUES
+('18/09/1987', '20/09/1987', '10', '10', '1', 'TRUE', 'test', 13, 83);
+
+SELECT date_facture,date_encaissement,
+montant_ttc,montant_ht, montant_tva,transmis_compta,commentaires,typeligne_id,societe_id
+FROM ligne_comptable;
 
 
+type_LIGNE COMPTABLE
+
+INSERT INTO type_ligne_comptable(label)
+VALUES
+('resto');
+
+
+
+
+
+SELECT *
+FROM ligne_comptable
+INNER JOIN societe on societe.id = ligne_comptable.id
+INNER JOIN type_ligne_comptable on typeligne_id = ligne_comptable.id;
