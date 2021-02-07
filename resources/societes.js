@@ -22,7 +22,7 @@ module.exports = database => {
     // POST SOCIETY
     router.post('/', (reqHttp, resHttp) => {
         const label = reqHttp.body.label;
-
+console.log(JSON.stringify(reqHttp.body));
         if (!label) {
             return resHttp.status(400).send({ error: 'undefined label' });
         }
@@ -32,7 +32,6 @@ module.exports = database => {
             [label],
             (err, res) => {
                 if (err) {
-                    console.log(err);
                     return resHttp.status(500).send({ error: 'server error' });
                 }
                 return resHttp.status(201).send();
@@ -43,7 +42,7 @@ module.exports = database => {
     //PUT ONE SOCIETY
     const putSociety = (reqHttp, resHttp) => {
         const idurl = reqHttp.params.id;
-        const id = reqHttp.body.id;
+        const id = +reqHttp.body.id;
         const label = reqHttp.body.label;
 
         //error if label null or undefined
@@ -61,7 +60,6 @@ module.exports = database => {
             [label, id],
             (err, res) => {
                 if (err) {
-                    console.log(err);
                     return resHttp.status(500).send({ error: 'server error' });
                 }
 
@@ -84,20 +82,18 @@ module.exports = database => {
             `DELETE FROM societe WHERE id = $1;`,
             [id],
             (err, res) => {
-                console.log(res);
                 if (err) {
                     return resHttp.status(500).send({ error: 'server error' });
-                }
-                if (res.rowCount === 0) {
-                    return resHttp.status(500).send({
-                        error: 'No delete, because no data to delete'
+                } else if (res.rowCount === 0) {
+                    return resHttp.status(404).send({
+                        error: "not_found",
+                        error_description: `The society '${id}' does not exist`
                     });
+                } else {
+                    return resHttp.status(204).send();
                 }
-
-                return resHttp.status(204).send();
             }
         );
     });
-
     return router;
 };
